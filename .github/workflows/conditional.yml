@@ -1,0 +1,50 @@
+name: Conditional
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - '*'
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+    paths:
+      - 'conditional-lib/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
+jobs:
+  main:
+    name: 'Test Conditional'
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout source
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - uses: pnpm/action-setup@v2.4.0
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 8
+
+      - name: Install Dependencies
+        run: pnpm i --frozen-lockfile --prefer-offline
+        shell: bash
+
+      - name: Test Conditional
+        run: pnpm nx test conditional-lib
+        env:
+          CI: true
