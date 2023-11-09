@@ -1,0 +1,37 @@
+{
+  "name": "conditional-lib",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "conditional-lib/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:swc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/conditional-lib",
+        "main": "conditional-lib/src/index.ts",
+        "tsConfig": "conditional-lib/tsconfig.lib.json",
+        "assets": ["conditional-lib/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "conditional-lib/**/*.ts",
+          "conditional-lib/package.json"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../coverage/conditional-lib"
+      }
+    }
+  },
+  "tags": []
+}
